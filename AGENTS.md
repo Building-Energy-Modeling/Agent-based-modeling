@@ -10,8 +10,8 @@ The first case study is Building-to-Grid: a workflow that coordinates a single-b
 - External software calls must be wrapped under `src/x2g_agent/tools/`.
 - Unit tests must not require real EnergyPlus or OpenDSS execution unless they are explicitly marked as integration tests.
 - Do not hard-code local paths. Use config values, environment variables, and paths relative to the config file or repository root.
-- Keep small sample data under `data_sample/`.
-- Large outputs should go to `outputs/` or an external configured `data_root` and should not be committed.
+- Keep small sample data under each sample's `data_sample/`.
+- Large outputs should go to each sample's `outputs/` or an external configured `data_root` and should not be committed.
 
 ## Workflow Artifacts
 
@@ -25,5 +25,5 @@ Every workflow run should produce:
 
 ## Definition Of Done
 
-- `python scripts/run_building_to_grid.py --config configs/building_to_grid.yaml` runs successfully in mock mode.
+- `python samples/single-building-to-grid/scripts/run_building_to_grid.py --config samples/single-building-to-grid/configs/building_to_grid.yaml` runs successfully in mock mode.
 - `pytest` passes.

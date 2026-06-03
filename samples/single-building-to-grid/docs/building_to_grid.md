@@ -1,5 +1,7 @@
 # Building-to-Grid Case Study
 
+This document belongs to the archived sample at `samples/single-building-to-grid`. Commands below assume that directory is the current working directory.
+
 ## Research Question
 
 How does an hourly building electricity demand profile affect distribution-feeder operating risk when it is injected at a specific grid bus?

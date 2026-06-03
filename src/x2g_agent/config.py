@@ -17,28 +17,31 @@ except ImportError:  # pragma: no cover - exercised only in minimal runtimes
 
 
 def load_config(config_path: Path) -> dict[str, Any]:
-    """Load YAML config and resolve paths relative to the repository root."""
+    """Load YAML config and resolve sample paths relative to the config file."""
     config_path = config_path.expanduser().resolve()
     _load_env(config_path.parent / ".env")
+    repo_root = _find_repo_root(config_path.parent)
+    _load_env(repo_root / ".env")
     _load_env(Path(".env"))
 
     config = _load_yaml(config_path)
 
-    repo_root = _find_repo_root(config_path.parent)
+    config_base = config_path.parent
     config["_config_path"] = str(config_path)
     config["_repo_root"] = str(repo_root)
+    config["_config_base"] = str(config_base)
     config = _expand_env_values(config)
-    config = normalize_building_to_grid_config(config, repo_root)
+    config = normalize_building_to_grid_config(config, config_base)
 
     opendss = config.get("opendss", {})
     if opendss.get("master_file"):
-        opendss["master_file"] = str(resolve_path(opendss["master_file"], repo_root))
+        opendss["master_file"] = str(resolve_path(opendss["master_file"], config_base))
     return config
 
 
-def normalize_building_to_grid_config(config: dict[str, Any], repo_root: Path) -> dict[str, Any]:
+def normalize_building_to_grid_config(config: dict[str, Any], config_base: Path) -> dict[str, Any]:
     if "paths" not in config:
-        config["output_root"] = str(resolve_path(config.get("output_root", "outputs"), repo_root))
+        config["output_root"] = str(resolve_path(config.get("output_root", "outputs"), config_base))
         return config
 
     case = config.get("case", {})
@@ -52,7 +55,7 @@ def normalize_building_to_grid_config(config: dict[str, Any], repo_root: Path) -
     mode = case.get("mode", "mock")
     feeder_template = opendss.get("feeder_template")
 
-    config["output_root"] = str(resolve_path(output_root, repo_root))
+    config["output_root"] = str(resolve_path(output_root, config_base))
     config["energyplus"] = {
         **energyplus,
         "mode": mode,

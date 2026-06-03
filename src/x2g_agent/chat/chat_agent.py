@@ -16,8 +16,8 @@ class ChatAgent:
 
     def __init__(
         self,
-        base_config_path: str | Path = "configs/building_to_grid.yaml",
-        session_root: str | Path = "outputs/chat_sessions",
+        base_config_path: str | Path = "samples/single-building-to-grid/configs/building_to_grid.yaml",
+        session_root: str | Path = "samples/single-building-to-grid/outputs/chat_sessions",
         backend: str = "rule",
         intent_parser: object | None = None,
         debug: bool = False,

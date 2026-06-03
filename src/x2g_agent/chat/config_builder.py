@@ -13,8 +13,8 @@ class ConfigBuilder:
 
     def __init__(
         self,
-        base_config_path: str | Path = "configs/building_to_grid.yaml",
-        session_root: str | Path = "outputs/chat_sessions",
+        base_config_path: str | Path = "samples/single-building-to-grid/configs/building_to_grid.yaml",
+        session_root: str | Path = "samples/single-building-to-grid/outputs/chat_sessions",
         session_id: str | None = None,
     ) -> None:
         self.base_config_path = Path(base_config_path)
@@ -23,6 +23,7 @@ class ConfigBuilder:
         self.session_dir = self.session_root / self.session_id
         self.config = self._load_base_config()
         self._ensure_chat_paths()
+        self._ensure_sample_asset_paths()
 
     def apply_intent(self, name: str, slots: dict[str, Any] | None = None) -> Path:
         slots = slots or {}
@@ -70,7 +71,7 @@ class ConfigBuilder:
             "building": {"building_id": "single_building_001", "bus_id": "bus_4", "load_scale": 1.0, "power_factor": 0.95},
             "opendss": {
                 "backend": "opendssdirect",
-                "feeder_template": "data_sample/opendss/simple_radial_feeder.dss",
+                "feeder_template": "../data_sample/opendss/simple_radial_feeder.dss",
                 "target_bus": "bus_4",
                 "base_kv": 12.47,
             },
@@ -81,6 +82,12 @@ class ConfigBuilder:
         self.config.setdefault("paths", {})
         self.config["paths"]["output_root"] = str((self.session_dir / "run").as_posix())
         self.config["paths"].setdefault("data_root", str(self.session_dir.as_posix()))
+
+    def _ensure_sample_asset_paths(self) -> None:
+        opendss = self.config.setdefault("opendss", {})
+        feeder_template = opendss.get("feeder_template")
+        if feeder_template:
+            opendss["feeder_template"] = str(_resolve_path(feeder_template, self.base_config_path.parent).as_posix())
 
 
 def _dump_yaml(value: dict[str, Any], indent: int = 0) -> str:
@@ -108,3 +115,10 @@ def _format_scalar(value: Any) -> str:
     if any(char in text for char in [":", "#", "{", "}", "[", "]"]) or " " in text:
         return f'"{text}"'
     return text
+
+
+def _resolve_path(value: str | Path, base: Path) -> Path:
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path
+    return (base / path).resolve()
