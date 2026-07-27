@@ -1,6 +1,6 @@
-# X2G-Agent
+# Agent-based cross-domain simulation
 
-X2G-Agent is a cross-domain simulation workflow agent for coordinating end-use energy simulation with power-grid simulation. It provides a lightweight Python workflow layer that standardizes load profiles, maps end-use demand into grid models, runs or mocks external simulators, evaluates grid risk, and writes reproducible artifacts.
+Here we provide a cross-domain simulation workflow agent for coordinating end-use energy simulation with power-grid simulation. It provides a lightweight Python workflow layer that standardizes load profiles, maps end-use demand into grid models, runs or mocks external simulators, evaluates grid risk, and writes reproducible artifacts.
 
 The repository now keeps runnable and planned workflows under `samples/`, while reusable source code remains under `src/x2g_agent/`.
 
